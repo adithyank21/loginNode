@@ -1,5 +1,5 @@
 const User = require("../models/userModel");
-const { generateOtp } = require("../services/otpService");
+const { generateOtp } = require("../middleware/otpService");
 
 exports.verifyOtp = async (req, res) => {
     const { phoneOrEmail, otp } = req.body;

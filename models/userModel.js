@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
     otp: { type: String },
     otpExpiry: { type: Date },
     isVerified: { type: Boolean, default: false },  
+    refreshToken: { type: String }  // Add this field for refresh token
 });
 
 module.exports = mongoose.model("User", userSchema);

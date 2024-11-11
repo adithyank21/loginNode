@@ -1,7 +1,6 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const User = require("../models/userModel");
-const { JWT_SECRET } = process.env;
+const bcrypt = require('bcrypt');  // Add this line to import bcrypt
+const User = require('../models/userModel');  // Ensure the path is correct
+const { generateAccessToken, generateRefreshToken } = require('../middleware/loginToken');
 
 exports.login = async (req, res) => {
     const { phoneOrEmail, password } = req.body;
@@ -42,12 +41,28 @@ exports.login = async (req, res) => {
             });
         }
 
-        // Create JWT token
-        const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "1h" });
+        // Generate tokens
+        const accessToken = generateAccessToken(user);
+        const refreshToken = generateRefreshToken(user);
+
+        // Store the refresh token in the database (optional)
+        user.refreshToken = refreshToken;
+
+        try {
+            await user.save(); // Save the refresh token to the database
+            console.log("Generated refresh token:", refreshToken);
+        } catch (saveError) {
+            console.error("Error saving refresh token:", saveError);
+            return res.status(500).json({
+                error: "Server error",
+                message: "An error occurred while saving the refresh token. Please try again later."
+            });
+        }
 
         res.status(200).json({
             message: "Login successful",
-            token: token
+            accessToken: accessToken,
+            refreshToken: refreshToken
         });
     } catch (error) {
         console.error(error);

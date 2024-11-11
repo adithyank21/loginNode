@@ -1,5 +1,5 @@
 const User = require("../models/userModel");
-const { generateOtp } = require("../services/otpService"); // Ensure OTP is correctly generated
+const { generateOtp } = require("../middleware/otpService"); // Ensure OTP is correctly generated
 const bcrypt = require("bcryptjs");  // For password hashing
 const { validateEmail, validatePhone, validatePassword } = require("../middleware/validation");
 
